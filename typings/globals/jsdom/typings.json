@@ -1,0 +1,8 @@
+{
+  "resolution": "main",
+  "tree": {
+    "src": "https://raw.githubusercontent.com/DefinitelyTyped/DefinitelyTyped/3fd4936d27036760eca71110d833bb1e33529c13/jsdom/jsdom.d.ts",
+    "raw": "registry:dt/jsdom#2.0.0+20160906180921",
+    "typings": "https://raw.githubusercontent.com/DefinitelyTyped/DefinitelyTyped/3fd4936d27036760eca71110d833bb1e33529c13/jsdom/jsdom.d.ts"
+  }
+}
