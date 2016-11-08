@@ -24,7 +24,7 @@ app.use(enrouten({ directory: 'routes' }));
 
 
 // catch 404 and forward to error handler
-app.use(function (req: express.Request, res, next) {
+app.use(function (req: express.Request, res: express.Response, next: express.NextFunction) {
     var err = new Error('Not Found');
     (<any>err).status = 404;
     next(err);
@@ -35,7 +35,7 @@ app.use(function (req: express.Request, res, next) {
 // development error handler
 // will print stacktrace
 if (app.get('env') === 'development') {
-    app.use(function (err: Error, req, res, next) {
+    app.use(function (err: Error, req: express.Request, res: express.Response, next: express.NextFunction) {
         res.status((<any>err).status || 500);
         res.render('error', {
             message: err.message,
@@ -46,7 +46,7 @@ if (app.get('env') === 'development') {
 
 // production error handler
 // no stacktraces leaked to user
-app.use(function (err: Error, req, res, next) {
+app.use(function (err: Error, req: express.Request, res: express.Response, next: express.NextFunction) {
     res.status((<any>err).status || 500);
     res.render('error', {
         message: err.message,
