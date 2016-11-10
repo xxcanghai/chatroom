@@ -6,6 +6,11 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var enrouten = require('express-enrouten');
 var app = express();
+// var server: http.Server = http.createServer(app);
+// var io: SocketIO.Server = socketio(http);
+// io.on("connection", function (socket: SocketIO.Socket) {
+//     console.log("socket.io on connection!");
+// });
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
@@ -45,3 +50,4 @@ app.use(function (err, req, res, next) {
     });
 });
 module.exports = app;
+//# sourceMappingURL=app.js.map

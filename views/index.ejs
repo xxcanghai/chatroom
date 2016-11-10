@@ -1,7 +1,18 @@
 <% locals.title = "首页" %>
+<% locals.js = "index" %>
+<% //locals.css = "index" %>
 
 <% include component/header %>
 
-<h1>Index Page</h1>
+<div id="main">
+    <div class="login" v-show="!isLogin">
+        <input type="text" placeholder="请输入用户名" v-model="userName" @keydown.enter="onLoginClick" />
+        <input type="button" value="登录" @click="onLoginClick" />
+    </div>
+    <div class="chat">
+        
+        <div>在线用户人数：{{onLineUserArr.length}}, 在线用户列表：{{onLineUserText}}</div>
+    </div>
+</div>
 
 <% include component/footer %>

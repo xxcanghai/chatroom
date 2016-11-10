@@ -1,13 +1,21 @@
-import express = require('express');
-import path = require('path');
-import favicon = require('serve-favicon');
-import logger = require('morgan');
-import cookieParser = require('cookie-parser');
-import bodyParser = require('body-parser');
+import * as express from 'express';
+import * as path from 'path';
+import * as favicon from 'serve-favicon';
+import * as logger from 'morgan';
+import * as cookieParser from 'cookie-parser';
+import * as bodyParser from 'body-parser';
+import * as http from 'http';
+import * as socketio from 'socket.io';//websocket库
 var enrouten = require('express-enrouten');
 
 
-var app = express();
+var app: express.Express = express();
+// var server: http.Server = http.createServer(app);
+// var io: SocketIO.Server = socketio(http);
+
+// io.on("connection", function (socket: SocketIO.Socket) {
+//     console.log("socket.io on connection!");
+// });
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));

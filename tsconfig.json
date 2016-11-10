@@ -1,7 +1,8 @@
 {
     "compilerOptions": {
         "module": "commonjs",
-        "watch": true
+        "watch": true,
+        "sourceMap": true
     },
     "exclude": [
         "node_modules"

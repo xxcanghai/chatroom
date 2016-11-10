@@ -17,6 +17,8 @@
         "require": "registry:dt/require#2.1.20+20160919185614",
         "serve-favicon": "registry:dt/serve-favicon#0.0.0+20160316155526",
         "serve-static": "registry:dt/serve-static#0.0.0+20160606155157",
+        "socket.io": "registry:dt/socket.io#1.4.4+20160909205835",
+        "socket.io-client": "registry:dt/socket.io-client#1.4.4+20160317120654",
         "underscore": "registry:dt/underscore#1.8.3+20160908111004",
         "vue": "registry:dt/vue#1.0.21+20160929090511"
     }

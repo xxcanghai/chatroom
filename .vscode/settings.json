@@ -1,4 +1,11 @@
 {
     // "typescript.tsdk": "./node_modules/typescript/lib",
-    "editor.detectIndentation": false
+    "editor.detectIndentation": false,
+    "files.exclude": {
+        "**/.git": true,
+        "**/.svn": true,
+        "**/.hg": true,
+        "**/.DS_Store": true,
+        "**/*.js.map": true
+    }
 }
