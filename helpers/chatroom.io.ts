@@ -9,14 +9,12 @@ export = function chatroomio(httpServer: http.Server) {
     var onLineUserArr: cr.serverUser[] = [];
 
     var server: SocketIO.Server = socketio(httpServer);
-
     server.on("connection", function (client: cr.socketClient) {
         console.log("socket.io on connection!一个用户进入");
-        // onConnArr.push(client);
 
 
         //监听新用户加入
-        client.on('login', function (data: cr.clientLogin) {
+        client.on('login', function (data: cr.clientEmitLogin, ack: (data: cr.serverEmitLoginACK) => void) {
             //将新加入用户的唯一标识当作socket的名称，后面退出的时候会用到
             var user = createServerUser(data.name, client, tool.getGUID());
             client.uid = user.uid;
@@ -26,11 +24,13 @@ export = function chatroomio(httpServer: http.Server) {
             }
 
             //向所有客户端广播用户加入
-            var serverLoginData: cr.serverLogin = {
+            var serverLoginData: cr.serverEmitLogin = {
                 onLineUserArr: onLineUserArr.map(u => getClientUserByServerUser(u)),
-                user: data
+                user: getClientUserByServerUser(getUser(client))
             };
-            server.emit('login', serverLoginData);
+            ack(serverLoginData);
+            server.emit('login', serverLoginData);//向所有连接进来的客户端发送有新用户登录通知
+            // client.broadcast.emit("login",serverLoginData);//向除了自己以外的所有客户端发送事件
             console.log(data.name + ' 加入了聊天室');
         });
 
@@ -43,19 +43,23 @@ export = function chatroomio(httpServer: http.Server) {
         });
 
         //监听用户退出
-        client.on('logout', function (data: cr.clientLogout) {
+        client.on('logout', function (data: cr.clientEmitLogout) {
             console.log("logout");
             var user = getUser(client);
             if (user == null) return;
             logout(user.uid);
         });
 
-        // //监听用户发布聊天内容
-        // client.on('message', function (obj) {
-        //     //向所有客户端广播发布的消息
-        //     io.emit('message', obj);
-        //     console.log(obj.username + '说：' + obj.content);
-        // });
+        //监听用户发布聊天内容
+        client.on('chat', function (data: cr.clientEmitChat) {
+            //向所有客户端广播发布的消息
+            var serverChatData: cr.serverEmitChat = {
+                message: data.message,
+                user: getClientUserByServerUser(getUser(client))
+            };
+            server.emit('chat', serverChatData);
+            console.log(serverChatData.user.name + '说：' + serverChatData.message);
+        });
     });
 
     /**
@@ -121,7 +125,7 @@ export = function chatroomio(httpServer: http.Server) {
         onLineUserArr.splice(onLineUserArr.indexOf(user), 1);
 
         //向所有客户端广播有用户退出
-        server.emit('logout', <cr.serverLogout>{
+        server.emit('logout', <cr.serverEmitLogout>{
             onLineUserArr: onLineUserArr.map(u => getClientUserByServerUser(u)),
             user: getClientUserByServerUser(user)
         });

@@ -60,7 +60,7 @@ declare namespace cr {
      * 
      * @interface clientLogin
      */
-    interface clientLogin {
+    interface clientEmitLogin {
         /**
          * 当前要登录的用户名
          * 
@@ -74,7 +74,28 @@ declare namespace cr {
      * 
      * @interface serverLogin
      */
-    interface serverLogin {
+    interface serverEmitLogin {
+        /**
+         * 只包含用户名和uid的在线用户数组
+         * 
+         * @type {cr.user[]}
+         */
+        onLineUserArr: cr.clientUser[];
+
+        /**
+         * 当前登录的用户对象
+         * 
+         * @type {clientUser}
+         */
+        user: clientUser;
+    }
+
+    /**
+     * 服务器端发起的login确认事件传输实体。通知当前用户登录成功
+     * 
+     * @interface serverLogin
+     */
+    interface serverEmitLoginACK {
         /**
          * 只包含用户名和uid的在线用户数组
          * 
@@ -95,7 +116,7 @@ declare namespace cr {
      * 
      * @interface clientLogout
      */
-    interface clientLogout {
+    interface clientEmitLogout {
 
     }
 
@@ -104,7 +125,7 @@ declare namespace cr {
      * 
      * @interface serverLogout
      */
-    interface serverLogout {
+    interface serverEmitLogout {
 
         /**
          * 只包含用户名和uid的在线用户数组
@@ -119,5 +140,72 @@ declare namespace cr {
          * @type {cr.clientUser}
          */
         user: cr.clientUser;
+    }
+
+    /**
+     * 客户端发起的chat事件传输实体，发送聊天内容
+     * 
+     * @interface clientChat
+     */
+    interface clientEmitChat {
+        /**
+         * 客户端发送的聊天文字信息
+         * 
+         * @type {string}
+         * @memberOf clientChat
+         */
+        message?: string;
+    }
+
+    /**
+     * 服务器端发起的chat事件的传输实体，向所有人通知有人发送了聊天消息
+     * 
+     * @interface serverChat
+     */
+    interface serverEmitChat {
+        /**
+         * 客户端发送的聊天文字信息
+         * 
+         * @type {string}
+         * @memberOf clientChat
+         */
+        message?: string;
+
+        /**
+         * 当前发出聊天信息的用户对象
+         * 
+         * @type {cr.clientUser}
+         */
+        user?: cr.clientUser;
+    }
+
+    /**
+     * 在浏览器端的消息对象实体
+     * 
+     * @interface clientMessage
+     */
+    interface clientMessage{
+        /**
+         * 客户端发送的聊天文字信息
+         * 
+         * @type {string}
+         * @memberOf clientChat
+         */
+        message?: string;
+
+        /**
+         * 发出此聊天信息的用户对象
+         * 
+         * @type {cr.clientUser}
+         */
+        user?: cr.clientUser;
+
+        /**
+         * 当前消息对象是否为我自己说的话
+         * 
+         * @type {boolean}
+         * @memberOf clientMessage
+         */
+        isMe?:boolean;
     }
 }

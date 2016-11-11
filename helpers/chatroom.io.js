@@ -8,9 +8,8 @@ module.exports = function chatroomio(httpServer) {
     var server = socketio(httpServer);
     server.on("connection", function (client) {
         console.log("socket.io on connection!一个用户进入");
-        // onConnArr.push(client);
         //监听新用户加入
-        client.on('login', function (data) {
+        client.on('login', function (data, ack) {
             //将新加入用户的唯一标识当作socket的名称，后面退出的时候会用到
             var user = createServerUser(data.name, client, tool.getGUID());
             client.uid = user.uid;
@@ -20,9 +19,11 @@ module.exports = function chatroomio(httpServer) {
             //向所有客户端广播用户加入
             var serverLoginData = {
                 onLineUserArr: onLineUserArr.map(function (u) { return getClientUserByServerUser(u); }),
-                user: data
+                user: getClientUserByServerUser(getUser(client))
             };
-            server.emit('login', serverLoginData);
+            ack(serverLoginData);
+            server.emit('login', serverLoginData); //向所有连接进来的客户端发送有新用户登录通知
+            // client.broadcast.emit("login",serverLoginData);//向除了自己以外的所有客户端发送事件
             console.log(data.name + ' 加入了聊天室');
         });
         //监听用户退出
@@ -41,12 +42,16 @@ module.exports = function chatroomio(httpServer) {
                 return;
             logout(user.uid);
         });
-        // //监听用户发布聊天内容
-        // client.on('message', function (obj) {
-        //     //向所有客户端广播发布的消息
-        //     io.emit('message', obj);
-        //     console.log(obj.username + '说：' + obj.content);
-        // });
+        //监听用户发布聊天内容
+        client.on('chat', function (data) {
+            //向所有客户端广播发布的消息
+            var serverChatData = {
+                message: data.message,
+                user: getClientUserByServerUser(getUser(client))
+            };
+            server.emit('chat', serverChatData);
+            console.log(serverChatData.user.name + '说：' + serverChatData.message);
+        });
     });
     function getUser(arg) {
         var userArr = [];

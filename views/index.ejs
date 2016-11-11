@@ -9,9 +9,19 @@
         <input type="text" placeholder="请输入用户名" v-model="userName" @keydown.enter="onLoginClick" />
         <input type="button" value="登录" @click="onLoginClick" />
     </div>
-    <div class="chat">
-        
-        <div>在线用户人数：{{onLineUserArr.length}}, 在线用户列表：{{onLineUserText}}</div>
+    <div v-show="isLogin">
+        <div class="" >
+            <div>在线用户人数：{{onLineUserArr.length}}, 在线用户列表：{{onLineUserText}}</div>
+            <input type="text" placeholder="要发送的聊天内容" v-model="chatMess" @keydown.enter="onSendMessClick">
+            <input type="button" value="发送消息" @click="onSendMessClick">
+        </div>
+        <hr>
+        <div class="chat">
+            <div v-for="obj in messArr">
+                <span :style="{'color':obj.isMe?'blue':'black'}">{{obj.user.name}} 说：</span>
+                <span>{{obj.message}}</span>
+            </div>
+        </div>
     </div>
 </div>
 
