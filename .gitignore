@@ -27,7 +27,8 @@ coverage
 build/Release
 
 # Dependency directories
-node_modules
+# 去掉忽略node_modules设定，使得部署更快速
+# node_modules 
 jspm_packages
 
 # Optional npm cache directory
