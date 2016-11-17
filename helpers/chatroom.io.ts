@@ -57,11 +57,11 @@ export = function chatroomio(httpServer: http.Server) {
         });
 
         //监听用户链接断开
-        client.on('disconnect', function (data: string, ack: (data) => void) {
+        client.on('disconnect', function (data: string) {
             console.log("disconnect");
             var user = getUser(client);
             if (user == null) return;
-            logout(user.socket, ack);
+            logout(user.socket, function(){});
         });
 
         //监听用户退出
