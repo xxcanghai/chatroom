@@ -1,9 +1,14 @@
 $(function () {
     var server;
     var vm;
+    /** 聊天服务器地址 */
+    var chatServerUrl = location.protocol + "//localhost:3000";
     var vmData = {
         /** 登录用户名 */
         userName: "jch",
+        /** 房间号 */
+        roomId: "1001",
+        /** 当前在线用户列表 */
         currentUser: {},
         /** 当前用户是否已经登录 */
         isLogin: false,
@@ -31,21 +36,32 @@ $(function () {
             return vm.onLineUserArr.map(function (u) { return u.name; }).join(",");
         }
     };
+    var vmWatch = {};
     vm = new Vue({
         el: "#main",
         data: vmData,
         methods: vmMethod,
         computed: vmComputed
     });
+    /** 系统消息用户 */
+    var systemUser = {
+        name: "system",
+        uid: "-1",
+        roomId: "-1"
+    };
     /**
      * 浏览器端发起用户登录
      *
      * @param {string} username 用户名
      */
     function clinetLogin(username) {
-        server = io.connect('ws://localhost:3000');
-        server.emit("login", { name: username }, function (data) {
+        server = io(chatServerUrl, {});
+        server.emit("login", { name: username, roomId: vm.roomId }, function (data) {
+            //当前用户登录成功
+            console.log("当前用户登录成功");
             vm.currentUser = data.user;
+            vm.onLineUserArr = data.onLineUserArr;
+            vm.roomId = data.user.roomId;
         });
         vm.isLogin = true; //TODO 此处应该改，应该在服务器返回当前用户已经登录后再修改此值
         server.on("login", serverLogin);
@@ -59,6 +75,7 @@ $(function () {
      */
     function serverLogin(data) {
         vm.onLineUserArr = data.onLineUserArr;
+        vm.messArr.push(createSystemMessage("新用户<" + data.user.name + ">登录，房间ID:" + data.user.roomId));
     }
     /**
      * 收到服务器发来的logout消息，有用户退出登录，更新当前在线用户列表
@@ -67,6 +84,7 @@ $(function () {
      */
     function serverLogout(data) {
         vm.onLineUserArr = data.onLineUserArr;
+        vm.messArr.push(createSystemMessage("用户<" + data.user.name + ">退出"));
     }
     /**
      * 向服务器发送聊天内容
@@ -74,7 +92,7 @@ $(function () {
      * @param {string} mess 聊天内容
      */
     function sendMessage(mess) {
-        server.emit("chat", { message: mess });
+        server.emit("chat", { message: mess }, serverChat);
     }
     /**
      * 收到服务器发来的chat消息，有用户发送了聊天内容
@@ -85,11 +103,17 @@ $(function () {
         console.log("onchat:", data);
         vm.messArr.push(createClientMessage(data.message, data.user, data.user.uid == vm.currentUser.uid));
     }
-    function createClientMessage(message, user, isMe) {
+    function createSystemMessage(message) {
+        return createClientMessage(message, systemUser, false, "system");
+    }
+    function createClientMessage(message, user, isMe, type) {
+        if (isMe === void 0) { isMe = false; }
+        if (type === void 0) { type = "chat"; }
         return {
             message: message,
             user: user,
-            isMe: isMe
+            isMe: isMe,
+            type: type
         };
     }
     function logout() {

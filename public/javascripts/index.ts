@@ -1,10 +1,16 @@
 $(function () {
     var server: SocketIOClient.Socket;
-    var vm: vuejs.Vue & typeof vmData & typeof vmMethod & typeof vmComputed;
+    var vm: vuejs.Vue & typeof vmData & typeof vmMethod & typeof vmComputed & typeof vmWatch;
+
+    /** 聊天服务器地址 */
+    var chatServerUrl = location.protocol + "//localhost:3000";
 
     var vmData = {
         /** 登录用户名 */
         userName: "jch",
+        /** 房间号 */
+        roomId: "1001",
+        /** 当前在线用户列表 */
         currentUser: <cr.clientUser>{},
         /** 当前用户是否已经登录 */
         isLogin: false,
@@ -35,12 +41,21 @@ $(function () {
         }),
     };
 
+    var vmWatch = {};
+
     vm = <any>new Vue({
         el: "#main",
         data: vmData,
         methods: vmMethod,
         computed: <any>vmComputed
     });
+
+    /** 系统消息用户 */
+    var systemUser: cr.clientUser = {
+        name: "system",
+        uid: "-1",
+        roomId: "-1"
+    };
 
 
     /**
@@ -49,9 +64,14 @@ $(function () {
      * @param {string} username 用户名
      */
     function clinetLogin(username: string) {
-        server = io.connect('ws://localhost:3000');
-        server.emit("login", <cr.clientEmitLogin>{ name: username }, function (data: cr.serverEmitLoginACK) {
+
+        server = io(chatServerUrl, {});
+        server.emit("login", <cr.clientEmitLogin>{ name: username, roomId: vm.roomId }, function (data: cr.serverEmitLoginACK) {
+            //当前用户登录成功
+            console.log("当前用户登录成功");
             vm.currentUser = data.user;
+            vm.onLineUserArr = data.onLineUserArr;
+            vm.roomId = data.user.roomId;
         });
 
         vm.isLogin = true;//TODO 此处应该改，应该在服务器返回当前用户已经登录后再修改此值
@@ -67,6 +87,7 @@ $(function () {
      */
     function serverLogin(data: cr.serverEmitLogin) {
         vm.onLineUserArr = data.onLineUserArr;
+        vm.messArr.push(createSystemMessage("新用户<" + data.user.name + ">登录，房间ID:" + data.user.roomId));
     }
 
 
@@ -77,6 +98,7 @@ $(function () {
      */
     function serverLogout(data: cr.serverEmitLogout) {
         vm.onLineUserArr = data.onLineUserArr;
+        vm.messArr.push(createSystemMessage("用户<" + data.user.name + ">退出"));
     }
 
     /**
@@ -85,7 +107,7 @@ $(function () {
      * @param {string} mess 聊天内容
      */
     function sendMessage(mess: string) {
-        server.emit("chat", <cr.clientEmitChat>{ message: mess });
+        server.emit("chat", <cr.clientEmitChat>{ message: mess }, serverChat);
     }
 
     /**
@@ -98,11 +120,16 @@ $(function () {
         vm.messArr.push(createClientMessage(data.message, data.user, data.user.uid == vm.currentUser.uid));
     }
 
-    function createClientMessage(message: string, user: cr.clientUser, isMe: boolean): cr.clientMessage {
+    function createSystemMessage(message: string): cr.clientMessage {
+        return createClientMessage(message, systemUser, false, "system");
+    }
+
+    function createClientMessage(message: string, user: cr.clientUser, isMe: boolean = false, type: "chat" | "system" = "chat"): cr.clientMessage {
         return {
             message: message,
             user: user,
-            isMe: isMe
+            isMe: isMe,
+            type: type
         };
     }
 

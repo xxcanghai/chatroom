@@ -9,6 +9,13 @@ declare namespace cr {
          * @type {string}
          */
         uid: string;
+
+        /**
+         * 当前socket用户所在的房间ID
+         * 
+         * @type {string}
+         */
+        roomId: string;
     }
 
     /**
@@ -20,14 +27,21 @@ declare namespace cr {
          * 
          * @type {string}
          */
-        name?: string;
+        name: string;
 
         /**
          * 用户的uid，随机字符串
          * 
          * @type {string}
          */
-        uid?: string;
+        uid: string;
+
+        /**
+         * 用户所在房间ID
+         * 
+         * @type {string}
+         */
+        roomId: string;
     }
 
     /**
@@ -42,7 +56,7 @@ declare namespace cr {
          * 
          * @type {cr.socketClient}
          */
-        socket?: cr.socketClient;
+        socket: cr.socketClient;
     }
 
     /**
@@ -66,7 +80,14 @@ declare namespace cr {
          * 
          * @type {string}
          */
-        name?: string;
+        name: string;
+
+        /**
+         * 要加入的房间号
+         * 
+         * @type {string}
+         */
+        roomId: string;
     }
 
     /**
@@ -95,20 +116,7 @@ declare namespace cr {
      * 
      * @interface serverLogin
      */
-    interface serverEmitLoginACK {
-        /**
-         * 只包含用户名和uid的在线用户数组
-         * 
-         * @type {cr.user[]}
-         */
-        onLineUserArr: cr.clientUser[];
-
-        /**
-         * 当前登录的用户对象
-         * 
-         * @type {clientUser}
-         */
-        user: clientUser;
+    interface serverEmitLoginACK extends serverEmitLogin {
     }
 
     /**
@@ -125,21 +133,7 @@ declare namespace cr {
      * 
      * @interface serverLogout
      */
-    interface serverEmitLogout {
-
-        /**
-         * 只包含用户名和uid的在线用户数组
-         * 
-         * @type {cr.user[]}
-         */
-        onLineUserArr: cr.clientUser[];
-
-        /**
-         * 当前退出的用户对象
-         * 
-         * @type {cr.clientUser}
-         */
-        user: cr.clientUser;
+    interface serverEmitLogout extends serverEmitLogin {
     }
 
     /**
@@ -154,7 +148,7 @@ declare namespace cr {
          * @type {string}
          * @memberOf clientChat
          */
-        message?: string;
+        message: string;
     }
 
     /**
@@ -169,14 +163,14 @@ declare namespace cr {
          * @type {string}
          * @memberOf clientChat
          */
-        message?: string;
+        message: string;
 
         /**
          * 当前发出聊天信息的用户对象
          * 
          * @type {cr.clientUser}
          */
-        user?: cr.clientUser;
+        user: cr.clientUser;
     }
 
     /**
@@ -184,21 +178,21 @@ declare namespace cr {
      * 
      * @interface clientMessage
      */
-    interface clientMessage{
+    interface clientMessage {
         /**
          * 客户端发送的聊天文字信息
          * 
          * @type {string}
          * @memberOf clientChat
          */
-        message?: string;
+        message: string;
 
         /**
          * 发出此聊天信息的用户对象
          * 
          * @type {cr.clientUser}
          */
-        user?: cr.clientUser;
+        user: cr.clientUser;
 
         /**
          * 当前消息对象是否为我自己说的话
@@ -206,6 +200,14 @@ declare namespace cr {
          * @type {boolean}
          * @memberOf clientMessage
          */
-        isMe?:boolean;
+        isMe: boolean;
+
+        /**
+         * 消息类型chat为用户消息，system为系统消息
+         * 
+         * @type {("chat" | "system")}
+         * @memberOf clientMessage
+         */
+        type: "chat" | "system";
     }
 }
