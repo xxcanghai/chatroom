@@ -43,12 +43,12 @@ module.exports = function chatroomio(httpServer) {
             console.log(data.name + ' 加入了聊天室');
         });
         //监听用户链接断开
-        client.on('disconnect', function (data, ack) {
+        client.on('disconnect', function (data) {
             console.log("disconnect");
             var user = getUser(client);
             if (user == null)
                 return;
-            logout(user.socket, ack);
+            logout(user.socket, function () { });
             client.leaveAll();
         });
         //监听用户退出
