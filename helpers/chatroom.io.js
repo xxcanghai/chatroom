@@ -49,6 +49,7 @@ module.exports = function chatroomio(httpServer) {
             if (user == null)
                 return;
             logout(user.socket, ack);
+            client.leaveAll();
         });
         //监听用户退出
         client.on('logout', function (data, ack) {
@@ -149,6 +150,7 @@ module.exports = function chatroomio(httpServer) {
             return false;
         var roomUserArr = roomDic[user.roomId];
         roomUserArr.splice(roomUserArr.indexOf(user), 1);
+        client.leave(user.roomId);
         //向所有客户端广播有用户退出
         var logoData = {
             onLineUserArr: roomUserArr.map(function (u) { return getClientUserByServerUser(u); }),

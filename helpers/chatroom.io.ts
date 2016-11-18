@@ -62,6 +62,7 @@ export = function chatroomio(httpServer: http.Server) {
             var user = getUser(client);
             if (user == null) return;
             logout(user.socket, ack);
+            client.leaveAll();
         });
 
         //监听用户退出
@@ -184,6 +185,7 @@ export = function chatroomio(httpServer: http.Server) {
         if (user == null) return false;
         var roomUserArr = roomDic[user.roomId];
         roomUserArr.splice(roomUserArr.indexOf(user), 1);
+        client.leave(user.roomId);
 
         //向所有客户端广播有用户退出
         var logoData: cr.serverEmitLogout = {
