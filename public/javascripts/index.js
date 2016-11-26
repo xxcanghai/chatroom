@@ -2,7 +2,7 @@ $(function () {
     var server;
     var vm;
     /** 聊天服务器地址 */
-    var chatServerUrl = location.protocol + "//localhost:3000";
+    var chatServerUrl = location.protocol + "//" + location.host;
     var vmData = {
         /** 登录用户名 */
         userName: "jch",

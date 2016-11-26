@@ -3,7 +3,7 @@ $(function () {
     var vm: vuejs.Vue & typeof vmData & typeof vmMethod & typeof vmComputed & typeof vmWatch;
 
     /** 聊天服务器地址 */
-    var chatServerUrl = location.protocol + "//localhost:3000";
+    var chatServerUrl = location.protocol + "//" + location.host;
 
     var vmData = {
         /** 登录用户名 */
