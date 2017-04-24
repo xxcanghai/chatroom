@@ -5,7 +5,6 @@
 <% include component/header %>
 
 <h1>Websocket Socket.IO Chatroom</h1>
-<hr>
 <div id="main">
     <div class="login" v-show="!isLogin">
         房间号：<input type="text" placeholder="请输入房间号" v-model="roomId" @keydown.enter="onLoginClick" />
