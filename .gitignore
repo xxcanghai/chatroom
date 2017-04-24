@@ -39,3 +39,7 @@ jspm_packages
 
 # ts生成的js MAP文件
 .js.map
+*.js.map
+
+# leancloud的配置文件
+#.leancloud/

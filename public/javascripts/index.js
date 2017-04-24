@@ -5,7 +5,7 @@ $(function () {
     var chatServerUrl = location.protocol + "//" + location.host;
     var vmData = {
         /** 登录用户名 */
-        userName: "jch",
+        userName: "",
         /** 房间号 */
         roomId: "1001",
         /** 当前在线用户列表 */
@@ -22,6 +22,10 @@ $(function () {
     var vmMethod = {
         /** 当点击登录按钮时执行登录操作 */
         onLoginClick: function (e) {
+            if (vm.userName.trim().length == 0 || vm.roomId.trim().length == 0) {
+                alert("请输入用户名和房间号");
+                return;
+            }
             clinetLogin(vm.userName);
         },
         /** 当点击发送消息按钮时发送聊天消息 */
