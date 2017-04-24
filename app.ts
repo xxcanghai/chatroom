@@ -6,10 +6,13 @@ import * as cookieParser from 'cookie-parser';
 import * as bodyParser from 'body-parser';
 import * as http from 'http';
 import * as socketio from 'socket.io';//websocket库
+import * as AV from 'leanengine';
+
+
 var enrouten = require('express-enrouten');
-
-
 var app: express.Express = express();
+
+
 // var server: http.Server = http.createServer(app);
 // var io: SocketIO.Server = socketio(http);
 
