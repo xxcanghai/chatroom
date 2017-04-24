@@ -1,6 +1,6 @@
 "use strict";
-var socketio = require('socket.io');
-var tool = require('./tool');
+var socketio = require("socket.io");
+var tool = require("./tool");
 var _ = require("underscore");
 module.exports = function chatroomio(httpServer) {
     /** 所有房间的在线且已登录用户数组 */
@@ -74,7 +74,7 @@ module.exports = function chatroomio(httpServer) {
     function getUser() {
         var args = [];
         for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i - 0] = arguments[_i];
+            args[_i] = arguments[_i];
         }
         var userArr = [];
         var client;
@@ -129,7 +129,7 @@ module.exports = function chatroomio(httpServer) {
     function isInRoom() {
         var args = [];
         for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i - 0] = arguments[_i];
+            args[_i] = arguments[_i];
         }
         return getUser.apply(this, [].slice.call(args)) !== null;
     }
